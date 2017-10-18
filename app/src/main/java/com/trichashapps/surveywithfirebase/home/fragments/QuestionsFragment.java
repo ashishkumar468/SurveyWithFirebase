@@ -70,8 +70,9 @@ public class QuestionsFragment extends Fragment {
 
     private void initRecyclerView() {
         rvQuestions.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvQuestions.setAdapter(adapter);
+        adapter = new QuestionsAdapter();
         adapter.setQuestionList(questions);
+        rvQuestions.setAdapter(adapter);
     }
 
     public interface Callback {

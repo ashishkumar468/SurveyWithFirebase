@@ -3,7 +3,6 @@ package com.trichashapps.surveywithfirebase.home.activities;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.google.firebase.database.DatabaseReference;
@@ -62,6 +61,7 @@ public class HomeActivity extends BaseActivity {
     private void initViewPager() {
         adapter = new HomeViewPagerAdapter(getSupportFragmentManager());
         QuestionsFragment questionsFragment = QuestionsFragment.getInstance();
+        questionsFragment.setQuestions(new ArrayList<Question>());
         questionsFragment.setCallback(new QuestionsFragment.Callback() {
             @Override
             public void onOptionsSelected(Question question) {
