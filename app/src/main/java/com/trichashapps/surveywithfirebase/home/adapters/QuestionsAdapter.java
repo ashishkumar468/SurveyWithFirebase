@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -18,6 +20,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;`
 
 /**
  * Created by Ashish on 18/10/17.
@@ -30,12 +33,18 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
     List<Question> questionList;
     private Context context;
 
+    private Callback callback;
+
     public QuestionsAdapter() {
         this.questionList = new ArrayList<>();
     }
 
     public void setQuestionList(List<Question> questionList) {
         this.questionList = questionList;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
 
     @Override
@@ -93,6 +102,10 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
         }
 
         public abstract void init(int position);
+
+        public void onSubmitButtonClicked(Question question) {
+            callback.onOptionsSelected(question);
+        }
     }
 
     private class SingleChoiceViewHolder extends ViewHolder {
@@ -102,6 +115,10 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
         @InjectView(R.id.lv_options)
         ListView lvOptions;
 
+        @InjectView(R.id.btn_submit)
+        Button btnSubmit;
+        private Question question;
+
 
         public SingleChoiceViewHolder(View itemView) {
             super(itemView);
@@ -110,8 +127,21 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         @Override
         public void init(int position) {
-            Question question = questionList.get(position);
+            question = questionList.get(position);
             tvQuestion.setText(question.getQuestionData().getTitle());
+
+            lvOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    String selectedOption = question.getQuestionData().getOptions().get(i);
+                    question.setSelectedAnswer(selectedOption);
+                }
+            });
+        }
+
+        @OnClick(R.id.btn_submit)
+        public void onSubmitButtomClicked() {
+            super.onSubmitButtonClicked(question);
         }
     }
 
@@ -122,6 +152,12 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
         @InjectView(R.id.lv_options)
         ListView lvOptions;
 
+        @InjectView(R.id.btn_submit)
+        Button btnSubmit;
+
+        List<String> selectedOptions;
+        private Question question;
+
         public MultipleChoiceViewHolder(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
@@ -129,10 +165,27 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         @Override
         public void init(int position) {
-            Question question = questionList.get(position);
+            selectedOptions = new ArrayList<>();
+            question = questionList.get(position);
             tvQuestion.setText(question.getQuestionData().getTitle());
+            lvOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    String selectedOption = question.getQuestionData().getOptions().get(i);
+                    if (!selectedOptions.contains(selectedOption)) {
+                        selectedOptions.add(selectedOption);
+                    } else {
+                        selectedOptions.remove(selectedOption);
+                    }
+                    question.setSelectedOptions(selectedOptions);
+                }
+            });
+            lvOptions.setAdapter(new SimpleAdapter(context, ));
+        }
 
-            lvOptions.setAdapter(new SimpleAdapter(context,));
+        @OnClick(R.id.btn_submit)
+        public void onSubmitButtomClicked() {
+            super.onSubmitButtonClicked(question);
         }
     }
 
@@ -143,6 +196,11 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
         @InjectView(R.id.et_answer)
         EditText etAnswer;
 
+        @InjectView(R.id.btn_submit)
+        Button btnSubmit;
+
+        private Question question;
+
         public TextTypeViewHoder(View itemView) {
             super(itemView);
             ButterKnife.inject(this, itemView);
@@ -150,8 +208,18 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         @Override
         public void init(int position) {
-            Question question = questionList.get(position);
+            question = questionList.get(position);
             tvQuestion.setText(question.getQuestionData().getTitle());
         }
+
+        @OnClick(R.id.btn_submit)
+        public void onSubmitButtomClicked() {
+            super.onSubmitButtonClicked(question);
+        }
     }
+
+    public interface Callback {
+        void onOptionsSelected(Question question);
+    }
+
 }

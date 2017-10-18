@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 
 import com.trichashapps.surveywithfirebase.R;
 import com.trichashapps.surveywithfirebase.home.adapters.QuestionsAdapter;
+import com.trichashapps.surveywithfirebase.home.model.domain.Question;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -26,7 +29,11 @@ public class QuestionsFragment extends Fragment {
 
     QuestionsAdapter adapter;
 
+    List<Question> questions;
+
     private static QuestionsFragment instance;
+
+    private Callback callback;
 
     public static QuestionsFragment getInstance() {
         if (instance == null)
@@ -38,6 +45,14 @@ public class QuestionsFragment extends Fragment {
 
     private void clearData() {
         // TODO: 09/10/17
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
 
     @Nullable
@@ -56,5 +71,10 @@ public class QuestionsFragment extends Fragment {
     private void initRecyclerView() {
         rvQuestions.setLayoutManager(new LinearLayoutManager(getContext()));
         rvQuestions.setAdapter(adapter);
+        adapter.setQuestionList(questions);
+    }
+
+    public interface Callback {
+        void onOptionsSelected(Question question);
     }
 }
