@@ -16,7 +16,7 @@ import com.trichashapps.surveywithfirebase.home.model.domain.Question;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.BindView;
 
 /**
  * Created by Ashish on 09/10/17.
@@ -24,7 +24,7 @@ import butterknife.InjectView;
 
 public class QuestionsFragment extends Fragment {
 
-    @InjectView(R.id.rv_questions)
+    @BindView(R.id.rv_questions)
     RecyclerView rvQuestions;
 
     QuestionsAdapter adapter;
@@ -59,7 +59,7 @@ public class QuestionsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_questions, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         init();
         return view;
     }

@@ -3,6 +3,7 @@ package com.trichashapps.surveywithfirebase.home.activities;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.google.firebase.database.DatabaseReference;
@@ -11,14 +12,15 @@ import com.trichashapps.surveywithfirebase.R;
 import com.trichashapps.surveywithfirebase.home.adapters.HomeViewPagerAdapter;
 import com.trichashapps.surveywithfirebase.home.fragments.QuestionsFragment;
 import com.trichashapps.surveywithfirebase.home.fragments.SurveyResponseFragment;
+import com.trichashapps.surveywithfirebase.home.model.domain.Question;
 import com.trichashapps.surveywithfirebase.home.presenters.HomePresenter;
 import com.trichashapps.surveywithfirebase.home.utils.HomeDataView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * Created by Ashish on 09/10/17.
@@ -26,10 +28,10 @@ import butterknife.InjectView;
 
 public class HomeActivity extends BaseActivity {
 
-    @InjectView(R.id.tl_home)
+    @BindView(R.id.tl_home)
     TabLayout tlHome;
 
-    @InjectView(R.id.vp_home)
+    @BindView(R.id.vp_home)
     ViewPager vpHome;
 
     private FirebaseDatabase database;
@@ -46,7 +48,7 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         init();
     }
 
@@ -59,8 +61,17 @@ public class HomeActivity extends BaseActivity {
 
     private void initViewPager() {
         adapter = new HomeViewPagerAdapter(getSupportFragmentManager());
-        HomeDataView homeQuestionsFragmentView = new HomeDataView("Questions", QuestionsFragment.getInstance());
-        HomeDataView homeResponsesFragmentView = new HomeDataView("Responses", SurveyResponseFragment.getInstance());
+        QuestionsFragment questionsFragment = QuestionsFragment.getInstance();
+        questionsFragment.setCallback(new QuestionsFragment.Callback() {
+            @Override
+            public void onOptionsSelected(Question question) {
+
+            }
+        });
+        SurveyResponseFragment surveyResponseFragment = SurveyResponseFragment.getInstance();
+
+        HomeDataView homeQuestionsFragmentView = new HomeDataView("Questions", questionsFragment);
+        HomeDataView homeResponsesFragmentView = new HomeDataView("Responses", surveyResponseFragment);
         homeViewFragments.add(homeQuestionsFragmentView);
         homeViewFragments.add(homeResponsesFragmentView);
         adapter.setHomeViewData(homeViewFragments);

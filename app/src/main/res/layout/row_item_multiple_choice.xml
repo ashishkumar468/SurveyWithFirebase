@@ -15,11 +15,11 @@
         android:id="@+id/lv_options"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/btn_submit"></ListView>
+        android:layout_above="@+id/btn_next"></ListView>
 
 
     <Button
-        android:id="@+id/btn_submit"
+        android:id="@+id/btn_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

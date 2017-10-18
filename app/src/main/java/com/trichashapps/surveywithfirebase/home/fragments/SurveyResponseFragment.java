@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
  */
 
 public class SurveyResponseFragment extends Fragment {
-    public static Fragment getInstance() {
+    public static SurveyResponseFragment getInstance() {
         return new SurveyResponseFragment();
     }
     // TODO: 09/10/17

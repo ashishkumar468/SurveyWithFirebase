@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.trichashapps.surveywithfirebase.R;
@@ -18,9 +17,10 @@ import com.trichashapps.surveywithfirebase.home.model.domain.Question;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;`
+import butterknife.OnClick;
+
 
 /**
  * Created by Ashish on 18/10/17.
@@ -80,7 +80,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
             case TEXT_TYPE:
             default:
                 view = LayoutInflater.from(context).inflate(R.layout.row_item_text_type, parent, false);
-                viewHolder = new TextTypeViewHoder(view);
+                viewHolder = new TextTypeViewHolder(view);
         }
         return viewHolder;
     }
@@ -103,26 +103,27 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         public abstract void init(int position);
 
-        public void onSubmitButtonClicked(Question question) {
+        public void onNextButtonClicked(Question question) {
             callback.onOptionsSelected(question);
         }
     }
 
-    private class SingleChoiceViewHolder extends ViewHolder {
-        @InjectView(R.id.tv_question)
+    public class SingleChoiceViewHolder extends ViewHolder {
+        @BindView(R.id.tv_question)
         TextView tvQuestion;
 
-        @InjectView(R.id.lv_options)
+        @BindView(R.id.lv_options)
         ListView lvOptions;
 
-        @InjectView(R.id.btn_submit)
-        Button btnSubmit;
+        @BindView(R.id.btn_next)
+        Button btnNext;
+
         private Question question;
 
 
         public SingleChoiceViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.inject(this, itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         @Override
@@ -139,28 +140,28 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
             });
         }
 
-        @OnClick(R.id.btn_submit)
-        public void onSubmitButtomClicked() {
-            super.onSubmitButtonClicked(question);
+        @OnClick(R.id.btn_next)
+        public void onNextButtomClicked() {
+            super.onNextButtonClicked(question);
         }
     }
 
-    private class MultipleChoiceViewHolder extends ViewHolder {
-        @InjectView(R.id.tv_question)
+    public class MultipleChoiceViewHolder extends ViewHolder {
+        @BindView(R.id.tv_question)
         TextView tvQuestion;
 
-        @InjectView(R.id.lv_options)
+        @BindView(R.id.lv_options)
         ListView lvOptions;
 
-        @InjectView(R.id.btn_submit)
-        Button btnSubmit;
+        @BindView(R.id.btn_next)
+        Button btnNext;
 
         List<String> selectedOptions;
         private Question question;
 
         public MultipleChoiceViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.inject(this, itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         @Override
@@ -180,30 +181,30 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
                     question.setSelectedOptions(selectedOptions);
                 }
             });
-            lvOptions.setAdapter(new SimpleAdapter(context, ));
+//            lvOptions.setAdapter(new SimpleAdapter(context, ));
         }
 
-        @OnClick(R.id.btn_submit)
-        public void onSubmitButtomClicked() {
-            super.onSubmitButtonClicked(question);
+        @OnClick(R.id.btn_next)
+        public void onNextButtomClicked() {
+            super.onNextButtonClicked(question);
         }
     }
 
-    private class TextTypeViewHoder extends ViewHolder {
-        @InjectView(R.id.tv_question)
+    public class TextTypeViewHolder extends ViewHolder {
+        @BindView(R.id.tv_question)
         TextView tvQuestion;
 
-        @InjectView(R.id.et_answer)
+        @BindView(R.id.et_answer)
         EditText etAnswer;
 
-        @InjectView(R.id.btn_submit)
-        Button btnSubmit;
+        @BindView(R.id.btn_next)
+        Button btnNext;
 
         private Question question;
 
-        public TextTypeViewHoder(View itemView) {
+        public TextTypeViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.inject(this, itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         @Override
@@ -212,9 +213,9 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
             tvQuestion.setText(question.getQuestionData().getTitle());
         }
 
-        @OnClick(R.id.btn_submit)
-        public void onSubmitButtomClicked() {
-            super.onSubmitButtonClicked(question);
+        @OnClick(R.id.btn_next)
+        public void onNextButtonClicked() {
+            super.onNextButtonClicked(question);
         }
     }
 
