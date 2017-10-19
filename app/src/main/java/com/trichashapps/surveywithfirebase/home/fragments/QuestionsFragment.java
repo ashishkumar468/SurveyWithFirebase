@@ -44,10 +44,7 @@ public class QuestionsFragment extends Fragment {
     private Callback callback;
 
     public static QuestionsFragment getInstance() {
-        if (instance == null)
-            instance = new QuestionsFragment();
-        else
-            instance.clearData();
+        instance = new QuestionsFragment();
         return instance;
     }
 
@@ -82,6 +79,7 @@ public class QuestionsFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 QuestionsResponseDTO value = dataSnapshot.getValue(QuestionsResponseDTO.class);
+                questions = value.getQuestions();
                 adapter.setQuestionList(value.getQuestions());
             }
 
@@ -100,8 +98,12 @@ public class QuestionsFragment extends Fragment {
         adapter = new QuestionsAdapter();
         adapter.setCallback(new QuestionsAdapter.Callback() {
             @Override
-            public void onOptionsSelected(Question question) {
+            public void onOptionsSelected(Question question, int position) {
                 callback.onOptionsSelected(question);
+
+                if (position < questions.size() - 1) {
+                    rvQuestions.scrollToPosition(position + 1);
+                }
             }
         });
         rvQuestions.setAdapter(adapter);

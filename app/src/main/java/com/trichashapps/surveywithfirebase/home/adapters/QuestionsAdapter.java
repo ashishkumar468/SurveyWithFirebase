@@ -111,8 +111,8 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         public abstract void init(int position);
 
-        public void onNextButtonClicked(Question question) {
-            callback.onOptionsSelected(question);
+        public void onNextButtonClicked(Question question, int position) {
+            callback.onOptionsSelected(question, position);
         }
     }
 
@@ -153,7 +153,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         @OnClick(R.id.btn_next)
         public void onNextButtomClicked() {
-            super.onNextButtonClicked(question);
+            super.onNextButtonClicked(question, getAdapterPosition());
         }
     }
 
@@ -200,7 +200,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         @OnClick(R.id.btn_next)
         public void onNextButtomClicked() {
-            super.onNextButtonClicked(question);
+            super.onNextButtonClicked(question, getAdapterPosition());
         }
     }
 
@@ -229,12 +229,13 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         @OnClick(R.id.btn_next)
         public void onNextButtonClicked() {
-            super.onNextButtonClicked(question);
+            question.setSelectedAnswer(etAnswer.getText().toString());
+            super.onNextButtonClicked(question, getAdapterPosition());
         }
     }
 
     public interface Callback {
-        void onOptionsSelected(Question question);
+        void onOptionsSelected(Question question, int position);
     }
 
 }

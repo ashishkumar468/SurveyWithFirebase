@@ -20,9 +20,12 @@ public class FirebaseHelper {
     private FirebaseDatabase firebaseDatabaseInstance;
     QuestionsResponseDTO value;
 
+    private DatabaseReference surveyReference;
+
 
     public FirebaseHelper() {
         this.firebaseDatabaseInstance = FirebaseDatabase.getInstance();
+        surveyReference = firebaseDatabaseInstance.getReference("1");
     }
 
     public static FirebaseHelper getInstance() {
@@ -41,5 +44,9 @@ public class FirebaseHelper {
         DatabaseReference reference = firebaseDatabaseInstance.getReference(surveyId + "");
         DatabaseReference questionsReference = reference.child("questions");
         questionsReference.setValue(questions);
+    }
+
+    public DatabaseReference getFirebaseResponsesReference() {
+        return surveyReference.child("userResponses");
     }
 }
