@@ -14,11 +14,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
 import com.trichashapps.surveywithfirebase.R;
 import com.trichashapps.surveywithfirebase.home.adapters.SurveyResponseAdapter;
 import com.trichashapps.surveywithfirebase.home.model.SurveyResponse;
-import com.trichashapps.surveywithfirebase.home.model.SurveyResponseDTO;
 import com.trichashapps.surveywithfirebase.home.model.domain.Question;
 import com.trichashapps.surveywithfirebase.home.model.domain.QuestionData;
 import com.trichashapps.surveywithfirebase.home.utils.FirebaseHelper;
@@ -106,7 +104,8 @@ public class SurveyResponseFragment extends Fragment {
                     surveyResponse.setQuestions(surveyQuestions);
                     surveyResponses.add(surveyResponse);
                 }
-                adapter.setSurveyResponses(surveyResponses);
+                List<String> surveyResponseStringList = MiscUtils.getSurveyResponseStringList(surveyResponses);
+                adapter.setSurveyResponses(surveyResponseStringList);
             }
 
             @Override

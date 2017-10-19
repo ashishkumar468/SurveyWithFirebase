@@ -1,7 +1,6 @@
 package com.trichashapps.surveywithfirebase.home.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trichashapps.surveywithfirebase.R;
-import com.trichashapps.surveywithfirebase.home.model.SurveyResponse;
-import com.trichashapps.surveywithfirebase.home.model.domain.Question;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,8 +20,8 @@ import butterknife.ButterKnife;
  */
 
 public class SurveyResponseAdapter extends RecyclerView.Adapter<SurveyResponseAdapter.ViewHolder> {
-    List<SurveyResponse> surveyResponses;
     private Context context;
+    private List<String> surveyResponses;
 
     public SurveyResponseAdapter() {
         this.surveyResponses = new ArrayList<>();
@@ -50,32 +46,30 @@ public class SurveyResponseAdapter extends RecyclerView.Adapter<SurveyResponseAd
         return surveyResponses.size();
     }
 
-    public void setSurveyResponses(List<SurveyResponse> surveyResponses) {
+    public void setSurveyResponses(List<String> surveyResponses) {
         this.surveyResponses = surveyResponses;
         notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tv_survey_timestamp)
-        TextView tvSurveyTimestamp;
+        @BindView(R.id.tv_survey_response)
+        TextView tvSurveyResponse;
 
-        @BindView(R.id.rv_survey_responses)
-        RecyclerView rvSurveyResponses;
+        @BindView(R.id.view_survey_seperator)
+        View viewSurveySeperator;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
         }
 
         public void init(int position) {
-            SurveyResponse surveyResponse = surveyResponses.get(position);
-            tvSurveyTimestamp.setText(surveyResponse.getSurveyTimestamp());
-            SurveyResponseInnerAdapter adapter = new SurveyResponseInnerAdapter();
-            rvSurveyResponses.setLayoutManager(new LinearLayoutManager(context));
-            rvSurveyResponses.setAdapter(adapter);
-            rvSurveyResponses.setNestedScrollingEnabled(false);
-            adapter.setQuestions(surveyResponse.getQuestions());
+            if (surveyResponses.get(position).equals("SURVEY_ENDS")) {
+                viewSurveySeperator.setVisibility(View.VISIBLE);
+            } else {
+                viewSurveySeperator.setVisibility(View.GONE);
+                tvSurveyResponse.setText(surveyResponses.get(position));
+            }
         }
     }
 }
