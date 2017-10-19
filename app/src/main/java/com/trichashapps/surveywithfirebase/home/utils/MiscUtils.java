@@ -18,7 +18,15 @@ public class MiscUtils {
             for (Question question : surveyResponse.getQuestions()) {
                 surveyResponseStringList.add(question.getQuestionData().getTitle());
                 surveyResponseStringList.add(question.getType());
-                surveyResponseStringList.add(question.getUserSelectedResponse());
+                if (question.getSelectedOptions() != null) {
+                    String selectedOptions = "";
+                    for (String selectedOption : question.getSelectedOptions()) {
+                        selectedOptions = selectedOption + " ";
+                    }
+                    surveyResponseStringList.add(selectedOptions.trim());
+                } else if (question.getSelectedAnswer() != null) {
+                    surveyResponseStringList.add(question.getSelectedAnswer());
+                }
             }
             surveyResponseStringList.add("SURVEY_ENDS");
         }
