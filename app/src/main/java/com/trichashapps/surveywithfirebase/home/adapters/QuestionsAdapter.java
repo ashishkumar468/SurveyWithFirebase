@@ -5,13 +5,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.trichashapps.surveywithfirebase.R;
+import com.trichashapps.surveywithfirebase.app.Constant;
 import com.trichashapps.surveywithfirebase.home.model.domain.Question;
 
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
     public void setQuestionList(List<Question> questionList) {
         this.questionList = questionList;
+        notifyDataSetChanged();
     }
 
     public void setCallback(Callback callback) {
@@ -51,13 +55,19 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
     public int getItemViewType(int position) {
         int itemViewType;
         Question question = questionList.get(position);
-        Question.QUESTION_TYPE questionType = question.getType();
-        if (questionType.equals(SINGLE_CHOICE)) {
-            itemViewType = SINGLE_CHOICE;
-        } else if (questionType.equals(MULTIPLE_CHOICE)) {
-            itemViewType = MULTIPLE_CHOICE;
-        } else {
-            itemViewType = TEXT_TYPE;
+        String questionType = question.getType();
+
+        switch (questionType) {
+            case Constant.QUESTION_TYPES.SINGLE_CHOICE:
+                itemViewType = SINGLE_CHOICE;
+                break;
+            case Constant.QUESTION_TYPES.MULTIPLE_CHOICE:
+                itemViewType = MULTIPLE_CHOICE;
+                break;
+            case Constant.QUESTION_TYPES.TEXT_INPUT:
+            default:
+                itemViewType = TEXT_TYPE;
+                break;
         }
         return itemViewType;
     }
@@ -74,7 +84,6 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
                 break;
             case MULTIPLE_CHOICE:
                 view = LayoutInflater.from(context).inflate(R.layout.row_item_multiple_choice, parent, false);
-
                 viewHolder = new MultipleChoiceViewHolder(view);
                 break;
             case TEXT_TYPE:
@@ -96,7 +105,6 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
     }
 
     public abstract class ViewHolder extends RecyclerView.ViewHolder {
-
         public ViewHolder(View itemView) {
             super(itemView);
         }
@@ -130,6 +138,9 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
         public void init(int position) {
             question = questionList.get(position);
             tvQuestion.setText(question.getQuestionData().getTitle());
+
+            lvOptions.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, question.getQuestionData().getOptions()));
+            lvOptions.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 
             lvOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -169,6 +180,10 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
             selectedOptions = new ArrayList<>();
             question = questionList.get(position);
             tvQuestion.setText(question.getQuestionData().getTitle());
+            lvOptions.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_multiple_choice, question.getQuestionData().getOptions()));
+            lvOptions.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+
+
             lvOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -181,7 +196,6 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
                     question.setSelectedOptions(selectedOptions);
                 }
             });
-//            lvOptions.setAdapter(new SimpleAdapter(context, ));
         }
 
         @OnClick(R.id.btn_next)

@@ -9,9 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.trichashapps.surveywithfirebase.R;
 import com.trichashapps.surveywithfirebase.home.adapters.QuestionsAdapter;
 import com.trichashapps.surveywithfirebase.home.model.domain.Question;
+import com.trichashapps.surveywithfirebase.home.model.domain.QuestionsResponseDTO;
+import com.trichashapps.surveywithfirebase.home.utils.FirebaseHelper;
+import com.trichashapps.surveywithfirebase.home.utils.MockUtils;
 
 import java.util.List;
 
@@ -47,10 +55,6 @@ public class QuestionsFragment extends Fragment {
         // TODO: 09/10/17
     }
 
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
-    }
-
     public void setCallback(Callback callback) {
         this.callback = callback;
     }
@@ -66,12 +70,40 @@ public class QuestionsFragment extends Fragment {
 
     private void init() {
         initRecyclerView();
+        initData();
     }
 
+    private void initData() {
+        FirebaseHelper firebaseHelper = FirebaseHelper.getInstance();
+        FirebaseDatabase firebaseDatabaseInstance = firebaseHelper.getFirebaseDatabaseInstance();
+
+        DatabaseReference reference = firebaseDatabaseInstance.getReference(1 + "");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                QuestionsResponseDTO value = dataSnapshot.getValue(QuestionsResponseDTO.class);
+                adapter.setQuestionList(value.getQuestions());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+
     private void initRecyclerView() {
-        rvQuestions.setLayoutManager(new LinearLayoutManager(getContext()));
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        rvQuestions.setLayoutManager(layoutManager);
         adapter = new QuestionsAdapter();
-        adapter.setQuestionList(questions);
+        adapter.setCallback(new QuestionsAdapter.Callback() {
+            @Override
+            public void onOptionsSelected(Question question) {
+                callback.onOptionsSelected(question);
+            }
+        });
         rvQuestions.setAdapter(adapter);
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 public class Question {
 
     private int id;
-    private QUESTION_TYPE type;
+    private String type;
     private QuestionData questionData;
 
     private List<String> selectedOptions;
@@ -33,7 +33,7 @@ public class Question {
         return id;
     }
 
-    public QUESTION_TYPE getType() {
+    public String getType() {
         return type;
     }
 
@@ -49,7 +49,8 @@ public class Question {
         this.questionData = questionData;
     }
 
-    public void setType(QUESTION_TYPE type) {
+    @QUESTION_TYPE
+    public void setType( String type) {
         this.type = type;
     }
 

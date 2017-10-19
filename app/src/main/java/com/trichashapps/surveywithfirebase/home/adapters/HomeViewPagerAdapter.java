@@ -18,6 +18,7 @@ import java.util.List;
 public class HomeViewPagerAdapter extends FragmentPagerAdapter {
     List<HomeDataView> homeViewData;
 
+
     public HomeViewPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
         this.homeViewData = new ArrayList<>();
@@ -33,22 +34,17 @@ public class HomeViewPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view == object;
-    }
-
-    @Override
     public Fragment getItem(int position) {
         return homeViewData.get(position).getFragment();
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        return super.instantiateItem(container, position);
+    public CharSequence getPageTitle(int position) {
+        return homeViewData.get(position).getTitle();
     }
 
     @Override
-    public CharSequence getPageTitle(int position) {
-        return homeViewData.get(position).getTitle();
+    public Object instantiateItem(ViewGroup container, int position) {
+        return super.instantiateItem(container, position);
     }
 }
