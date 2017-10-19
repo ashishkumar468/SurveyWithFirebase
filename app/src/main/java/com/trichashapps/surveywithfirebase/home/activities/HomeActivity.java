@@ -12,6 +12,7 @@ import com.trichashapps.surveywithfirebase.R;
 import com.trichashapps.surveywithfirebase.home.adapters.HomeViewPagerAdapter;
 import com.trichashapps.surveywithfirebase.home.fragments.QuestionsFragment;
 import com.trichashapps.surveywithfirebase.home.fragments.SurveyResponseFragment;
+import com.trichashapps.surveywithfirebase.home.model.SurveyResponse;
 import com.trichashapps.surveywithfirebase.home.model.domain.Question;
 import com.trichashapps.surveywithfirebase.home.utils.FirebaseHelper;
 import com.trichashapps.surveywithfirebase.home.utils.HomeDataView;
@@ -113,6 +114,7 @@ public class HomeActivity extends BaseActivity {
         if (!userSelectedResponses.isEmpty()) {
             firebaseResponsesReference.child(System.currentTimeMillis() + "").setValue(userSelectedResponses);
             userSelectedResponses.clear();
+            questionsFragment.resetData();
         }
     }
 

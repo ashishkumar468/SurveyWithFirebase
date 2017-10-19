@@ -21,6 +21,7 @@ import com.trichashapps.surveywithfirebase.home.model.domain.QuestionsResponseDT
 import com.trichashapps.surveywithfirebase.home.utils.FirebaseHelper;
 import com.trichashapps.surveywithfirebase.home.utils.MockUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -107,6 +108,12 @@ public class QuestionsFragment extends Fragment {
             }
         });
         rvQuestions.setAdapter(adapter);
+    }
+
+    public void resetData() {
+        adapter.setQuestionList(new ArrayList<Question>());
+        adapter.setQuestionList(questions);
+        rvQuestions.scrollToPosition(0);
     }
 
     public interface Callback {

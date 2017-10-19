@@ -1,5 +1,7 @@
 package com.trichashapps.surveywithfirebase.home.model.domain;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -7,9 +9,10 @@ import java.util.List;
  */
 
 public class QuestionData {
+    @SerializedName("title")
     private String title;
+    @SerializedName("options")
     private List<String> options;
-
 
 
     public String getTitle() {

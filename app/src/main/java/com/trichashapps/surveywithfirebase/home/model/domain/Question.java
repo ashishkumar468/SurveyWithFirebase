@@ -2,6 +2,7 @@ package com.trichashapps.surveywithfirebase.home.model.domain;
 
 import android.support.annotation.StringDef;
 
+import com.google.gson.annotations.SerializedName;
 import com.trichashapps.surveywithfirebase.app.Constant;
 
 import java.lang.annotation.Retention;
@@ -13,11 +14,13 @@ import java.util.List;
  */
 
 public class Question {
-
+    @SerializedName("id")
     private int id;
+    @SerializedName("type")
     private String type;
+    @SerializedName("questionData")
     private QuestionData questionData;
-
+    @SerializedName("selectedOptions")
     private List<String> selectedOptions;
 
     //This can be from single choice or text type
@@ -50,7 +53,7 @@ public class Question {
     }
 
     @QUESTION_TYPE
-    public void setType( String type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -68,5 +71,26 @@ public class Question {
 
     public void setSelectedAnswer(String selectedAnswer) {
         this.selectedAnswer = selectedAnswer;
+    }
+
+    public String getUserSelectedResponse() {
+        String userResponse = "";
+        String questionType = this.getType();
+
+        switch (questionType) {
+            case Constant.QUESTION_TYPES.SINGLE_CHOICE:
+                userResponse = this.getSelectedAnswer();
+                break;
+            case Constant.QUESTION_TYPES.MULTIPLE_CHOICE:
+                for (String s : this.getSelectedOptions()) {
+                    userResponse += s + " ";
+                }
+                break;
+            case Constant.QUESTION_TYPES.TEXT_INPUT:
+            default:
+                userResponse = this.getSelectedAnswer();
+                break;
+        }
+        return userResponse;
     }
 }
