@@ -19,13 +19,12 @@ import com.trichashapps.surveywithfirebase.home.adapters.QuestionsAdapter;
 import com.trichashapps.surveywithfirebase.home.model.domain.Question;
 import com.trichashapps.surveywithfirebase.home.model.domain.QuestionsResponseDTO;
 import com.trichashapps.surveywithfirebase.home.utils.FirebaseHelper;
-import com.trichashapps.surveywithfirebase.home.utils.MockUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Ashish on 09/10/17.
@@ -44,13 +43,22 @@ public class QuestionsFragment extends Fragment {
 
     private Callback callback;
 
+    List<Question> userSelectedResponses;
+
+    private DatabaseReference firebaseResponsesReference;
+
     public static QuestionsFragment getInstance() {
         instance = new QuestionsFragment();
         return instance;
     }
 
+    public QuestionsFragment() {
+        this.userSelectedResponses = new ArrayList<>();
+    }
+
     private void clearData() {
-        // TODO: 09/10/17
+        userSelectedResponses.clear();
+        questions.clear();
     }
 
     public void setCallback(Callback callback) {
@@ -69,6 +77,11 @@ public class QuestionsFragment extends Fragment {
     private void init() {
         initRecyclerView();
         initData();
+        initFirebaseResponsesReference();
+    }
+
+    private void initFirebaseResponsesReference() {
+        firebaseResponsesReference = FirebaseHelper.getInstance().getFirebaseResponsesReference();
     }
 
     private void initData() {
@@ -100,14 +113,56 @@ public class QuestionsFragment extends Fragment {
         adapter.setCallback(new QuestionsAdapter.Callback() {
             @Override
             public void onOptionsSelected(Question question, int position) {
-                callback.onOptionsSelected(question);
-
+                if (userSelectedResponses.contains(question)) {
+                    userSelectedResponses.remove(question);
+                } else {
+                    userSelectedResponses.add(question);
+                }
                 if (position < questions.size() - 1) {
                     rvQuestions.scrollToPosition(position + 1);
                 }
             }
+
+            @Override
+            public void onSubmit() {
+                if (areResponsesValid()) {
+                    firebaseResponsesReference.child(System.currentTimeMillis() + "").setValue(userSelectedResponses, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            userSelectedResponses.clear();
+                            adapter.setQuestionList(new ArrayList<Question>());
+                            adapter.setQuestionList(questions);
+                        }
+                    });
+                } else {
+                    // TODO: 21/10/17 Show message to user that response is not valid
+                    rvQuestions.scrollToPosition(getInvalidResponsePosition());
+                }
+            }
         });
         rvQuestions.setAdapter(adapter);
+    }
+
+    private int getInvalidResponsePosition() {
+        int i = 0;
+        for (Question question : questions) {
+            boolean flag = false;
+            for (Question userSelectedRespons : userSelectedResponses) {
+                if (question.getId() == userSelectedRespons.getId()) {
+                    flag = true;
+                }
+            }
+            if (!flag)
+                return i;
+            i++;
+        }
+        return 0;//This case would never happen
+    }
+
+    private boolean areResponsesValid() {
+        if (userSelectedResponses.size() == questions.size())
+            return true;
+        return false;
     }
 
     public void resetData() {
@@ -118,5 +173,7 @@ public class QuestionsFragment extends Fragment {
 
     public interface Callback {
         void onOptionsSelected(Question question);
+
+        void onSubmit();
     }
 }

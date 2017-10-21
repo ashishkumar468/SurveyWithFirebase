@@ -66,8 +66,10 @@ public class SurveyResponseAdapter extends RecyclerView.Adapter<SurveyResponseAd
         public void init(int position) {
             if (surveyResponses.get(position).equals("SURVEY_ENDS")) {
                 viewSurveySeperator.setVisibility(View.VISIBLE);
+                tvSurveyResponse.setVisibility(View.GONE);
             } else {
                 viewSurveySeperator.setVisibility(View.GONE);
+                tvSurveyResponse.setVisibility(View.VISIBLE);
                 tvSurveyResponse.setText(surveyResponses.get(position));
             }
         }

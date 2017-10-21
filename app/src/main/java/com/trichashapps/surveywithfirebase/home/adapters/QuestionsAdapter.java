@@ -113,6 +113,10 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         public void onNextButtonClicked(Question question, int position) {
             callback.onOptionsSelected(question, position);
+
+            if (position == questionList.size()) {
+                callback.onSubmit();
+            }
         }
     }
 
@@ -138,6 +142,10 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
         public void init(int position) {
             question = questionList.get(position);
             tvQuestion.setText(question.getQuestionData().getTitle());
+
+            if (position == questionList.size() - 1) {
+                btnNext.setText(context.getString(R.string.submit));
+            }
 
             lvOptions.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, question.getQuestionData().getOptions()));
             lvOptions.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
@@ -180,6 +188,12 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
             selectedOptions = new ArrayList<>();
             question = questionList.get(position);
             tvQuestion.setText(question.getQuestionData().getTitle());
+
+            if (position == questionList.size() - 1) {
+                btnNext.setText(context.getString(R.string.submit));
+            }
+
+
             lvOptions.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_multiple_choice, question.getQuestionData().getOptions()));
             lvOptions.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
 
@@ -223,8 +237,14 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         @Override
         public void init(int position) {
+            etAnswer.setText("");
             question = questionList.get(position);
             tvQuestion.setText(question.getQuestionData().getTitle());
+
+            //The last next button actually submits the response to firebase
+            if (position == questionList.size() - 1) {
+                btnNext.setText(context.getString(R.string.submit));
+            }
         }
 
         @OnClick(R.id.btn_next)
@@ -236,6 +256,8 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
     public interface Callback {
         void onOptionsSelected(Question question, int position);
+
+        void onSubmit();
     }
 
 }
