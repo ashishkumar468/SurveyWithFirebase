@@ -1,5 +1,6 @@
 package com.trichashapps.surveywithfirebase.home.fragments;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -47,6 +48,8 @@ public class QuestionsFragment extends Fragment {
 
     private DatabaseReference firebaseResponsesReference;
 
+    private ProgressDialog progressDialog;
+
     public static QuestionsFragment getInstance() {
         instance = new QuestionsFragment();
         return instance;
@@ -75,9 +78,23 @@ public class QuestionsFragment extends Fragment {
     }
 
     private void init() {
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
         initRecyclerView();
         initData();
         initFirebaseResponsesReference();
+    }
+
+    private void showProgress() {
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+    }
+
+    private void hideProgress() {
+        if (progressDialog.isShowing()) {
+            progressDialog.hide();
+        }
     }
 
     private void initFirebaseResponsesReference() {
@@ -85,6 +102,7 @@ public class QuestionsFragment extends Fragment {
     }
 
     private void initData() {
+        showProgress();
         FirebaseHelper firebaseHelper = FirebaseHelper.getInstance();
         FirebaseDatabase firebaseDatabaseInstance = firebaseHelper.getFirebaseDatabaseInstance();
 
@@ -95,6 +113,7 @@ public class QuestionsFragment extends Fragment {
                 QuestionsResponseDTO value = dataSnapshot.getValue(QuestionsResponseDTO.class);
                 questions = value.getQuestions();
                 adapter.setQuestionList(value.getQuestions());
+                hideProgress();
             }
 
             @Override
@@ -126,6 +145,7 @@ public class QuestionsFragment extends Fragment {
             @Override
             public void onSubmit() {
                 if (areResponsesValid()) {
+                    showProgress();
                     firebaseResponsesReference.child(System.currentTimeMillis() + "").setValue(userSelectedResponses, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -134,6 +154,7 @@ public class QuestionsFragment extends Fragment {
                             adapter.setQuestionList(new ArrayList<Question>());
                             adapter.setQuestionList(questions);
                             rvQuestions.scrollToPosition(0);
+                            hideProgress();
                         }
                     });
                 } else {

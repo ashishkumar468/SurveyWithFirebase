@@ -1,5 +1,6 @@
 package com.trichashapps.surveywithfirebase.home.fragments;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -42,6 +43,8 @@ public class SurveyResponseFragment extends Fragment {
 
     private SurveyResponseAdapter adapter;
 
+    private ProgressDialog progressDialog;
+
     public static SurveyResponseFragment getInstance() {
         return new SurveyResponseFragment();
     }
@@ -61,8 +64,21 @@ public class SurveyResponseFragment extends Fragment {
     }
 
     private void init() {
+        progressDialog = new ProgressDialog(getContext());
         surveyResponses = new ArrayList<>();
         initRecyclerView();
+    }
+
+    private void showProgress() {
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+    }
+
+    private void hideProgress() {
+        if (progressDialog.isShowing()) {
+            progressDialog.hide();
+        }
     }
 
     private void initRecyclerView() {
@@ -75,6 +91,7 @@ public class SurveyResponseFragment extends Fragment {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                showProgress();
                 surveyResponses = new ArrayList<>();
                 Map<String, Object> responseMap = (Map<String, Object>) dataSnapshot.getValue();
                 if (responseMap != null && responseMap.size() > 0) {
@@ -109,6 +126,7 @@ public class SurveyResponseFragment extends Fragment {
                 }
                 List<String> surveyResponseStringList = MiscUtils.getSurveyResponseStringList(surveyResponses);
                 adapter.setSurveyResponses(surveyResponseStringList);
+                hideProgress();
             }
 
             @Override
