@@ -44,8 +44,6 @@ public class QuestionsFragment extends Fragment {
 
     private static QuestionsFragment instance;
 
-    private Callback callback;
-
     List<Question> userSelectedResponses;
 
     private DatabaseReference firebaseResponsesReference;
@@ -64,10 +62,6 @@ public class QuestionsFragment extends Fragment {
     private void clearData() {
         userSelectedResponses.clear();
         questions.clear();
-    }
-
-    public void setCallback(Callback callback) {
-        this.callback = callback;
     }
 
     @Nullable
@@ -104,26 +98,29 @@ public class QuestionsFragment extends Fragment {
     }
 
     private void initData() {
-        showProgress();
-        FirebaseHelper firebaseHelper = FirebaseHelper.getInstance();
-        FirebaseDatabase firebaseDatabaseInstance = firebaseHelper.getFirebaseDatabaseInstance();
+        if (MiscUtils.isConnectedToInternet(getContext())) {
+            showProgress();
+            FirebaseHelper firebaseHelper = FirebaseHelper.getInstance();
+            FirebaseDatabase firebaseDatabaseInstance = firebaseHelper.getFirebaseDatabaseInstance();
 
-        DatabaseReference reference = firebaseDatabaseInstance.getReference(1 + "");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                QuestionsResponseDTO value = dataSnapshot.getValue(QuestionsResponseDTO.class);
-                questions = value.getQuestions();
-                adapter.setQuestionList(value.getQuestions());
-                hideProgress();
-            }
+            DatabaseReference reference = firebaseDatabaseInstance.getReference(1 + "");
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    QuestionsResponseDTO value = dataSnapshot.getValue(QuestionsResponseDTO.class);
+                    questions = value.getQuestions();
+                    adapter.setQuestionList(value.getQuestions());
+                    hideProgress();
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                showMessage(getString(R.string.something_went_wrong));
-            }
-        });
-
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    showMessage(getString(R.string.something_went_wrong));
+                }
+            });
+        } else {
+            showMessage(getString(R.string.no_internet_connection));
+        }
     }
 
     private void showMessage(String message) {
@@ -163,16 +160,21 @@ public class QuestionsFragment extends Fragment {
                                 adapter.setQuestionList(questions);
                                 rvQuestions.scrollToPosition(0);
                                 hideProgress();
-                                showMessage(getString(R.string.response_saved_succesfully));
+                                showErrorMessage(getString(R.string.response_saved_succesfully));
                             }
                         });
                     } else {
-                        // TODO: 21/10/17 Show message to user that response is not valid
+                        showMessage(getString(R.string.please_make_sure_you_answer_all_the_questions));
                         rvQuestions.scrollToPosition(getInvalidResponsePosition());
                     }
                 } else {
                     showMessage(getString(R.string.no_internet_connection));
                 }
+            }
+
+            @Override
+            public void showErrorMessage(String message) {
+                showMessage(message);
             }
         });
         rvQuestions.setAdapter(adapter);
@@ -198,17 +200,5 @@ public class QuestionsFragment extends Fragment {
         if (userSelectedResponses.size() == questions.size())
             return true;
         return false;
-    }
-
-    public void resetData() {
-        adapter.setQuestionList(new ArrayList<Question>());
-        adapter.setQuestionList(questions);
-        rvQuestions.scrollToPosition(0);
-    }
-
-    public interface Callback {
-        void onOptionsSelected(Question question);
-
-        void onSubmit();
     }
 }

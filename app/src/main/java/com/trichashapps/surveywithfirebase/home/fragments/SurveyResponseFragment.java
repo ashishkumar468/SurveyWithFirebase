@@ -86,8 +86,11 @@ public class SurveyResponseFragment extends Fragment {
         adapter = new SurveyResponseAdapter();
         rvSurveyResponses.setLayoutManager(new LinearLayoutManager(getContext()));
         rvSurveyResponses.setAdapter(adapter);
-
-        initData();
+        if (MiscUtils.isConnectedToInternet(getContext())) {
+            initData();
+        } else {
+            showMessage(getString(R.string.no_internet_connection));
+        }
     }
 
     private void initData() {

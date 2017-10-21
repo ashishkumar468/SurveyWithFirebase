@@ -166,7 +166,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
             if (!TextUtils.isEmpty(selectedOption))
                 super.onNextButtonClicked(question, getAdapterPosition());
             else {
-                // TODO: 21/10/17 show message you must select this option to proceed
+                showMessage(context.getString(R.string.invalid_input));
             }
         }
     }
@@ -223,7 +223,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
             if (selectedOptions != null && selectedOptions.size() > 0)
                 super.onNextButtonClicked(question, getAdapterPosition());
             else {
-                // TODO: 21/10/17 show message you must select this option to proceed
+                showMessage(context.getString(R.string.invalid_input));
             }
 
         }
@@ -264,15 +264,21 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
                 question.setSelectedAnswer(etAnswer.getText().toString());
                 super.onNextButtonClicked(question, getAdapterPosition());
             } else {
-                // TODO: 21/10/17 show message you must select this option to proceed
+                showMessage(context.getString(R.string.invalid_input));
             }
         }
+    }
+
+    private void showMessage(String message) {
+        callback.showErrorMessage(message);
     }
 
     public interface Callback {
         void onOptionsSelected(Question question, int position);
 
         void onSubmit();
+
+        void showErrorMessage(String message);
     }
 
 }

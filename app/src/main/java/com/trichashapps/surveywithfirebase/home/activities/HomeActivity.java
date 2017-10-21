@@ -6,15 +6,12 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.widget.Button;
+import android.view.View;
 
-import com.google.firebase.database.DatabaseReference;
 import com.trichashapps.surveywithfirebase.R;
 import com.trichashapps.surveywithfirebase.home.adapters.HomeViewPagerAdapter;
 import com.trichashapps.surveywithfirebase.home.fragments.QuestionsFragment;
 import com.trichashapps.surveywithfirebase.home.fragments.SurveyResponseFragment;
-import com.trichashapps.surveywithfirebase.home.model.SurveyResponse;
-import com.trichashapps.surveywithfirebase.home.model.domain.Question;
 import com.trichashapps.surveywithfirebase.home.utils.FirebaseHelper;
 import com.trichashapps.surveywithfirebase.home.utils.HomeDataView;
 
@@ -23,7 +20,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by Ashish on 09/10/17.
@@ -60,6 +56,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void init() {
+        toolbar.setTitleTextColor(getResources().getColor(R.color.color_white));
         initFirebaseHelper();
         homeViewFragments = new ArrayList<>();
         initViewPager();

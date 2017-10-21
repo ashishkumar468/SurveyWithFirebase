@@ -1,9 +1,11 @@
 <resources>
-    <string name="app_name">SurveyWithFirebase</string>
+    <string name="app_name">Survey</string>
     <string name="next">Next</string>
     <string name="submit">Submit</string>
     <string name="questions_fragment_title">Questions for the survey</string>
     <string name="no_internet_connection">Please check your internet connection</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="response_saved_succesfully">Response saved succcesfully</string>
+    <string name="please_make_sure_you_answer_all_the_questions">Please make sure you answer all the questions</string>
+    <string name="invalid_input">Invalid input</string>
 </resources>
