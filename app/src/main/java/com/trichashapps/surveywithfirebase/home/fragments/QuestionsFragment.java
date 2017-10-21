@@ -16,10 +16,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trichashapps.surveywithfirebase.R;
+import com.trichashapps.surveywithfirebase.home.activities.HomeActivity;
 import com.trichashapps.surveywithfirebase.home.adapters.QuestionsAdapter;
 import com.trichashapps.surveywithfirebase.home.model.domain.Question;
 import com.trichashapps.surveywithfirebase.home.model.domain.QuestionsResponseDTO;
 import com.trichashapps.surveywithfirebase.home.utils.FirebaseHelper;
+import com.trichashapps.surveywithfirebase.home.utils.MiscUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,10 +120,14 @@ public class QuestionsFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                showMessage(getString(R.string.something_went_wrong));
             }
         });
 
+    }
+
+    private void showMessage(String message) {
+        ((HomeActivity) getContext()).showMessage(message);
     }
 
 
@@ -144,22 +150,28 @@ public class QuestionsFragment extends Fragment {
 
             @Override
             public void onSubmit() {
-                if (areResponsesValid()) {
-                    showProgress();
-                    firebaseResponsesReference.child(System.currentTimeMillis() + "").setValue(userSelectedResponses, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            userSelectedResponses.clear();
-                            userSelectedResponses = new ArrayList<>();
-                            adapter.setQuestionList(new ArrayList<Question>());
-                            adapter.setQuestionList(questions);
-                            rvQuestions.scrollToPosition(0);
-                            hideProgress();
-                        }
-                    });
+
+                if (MiscUtils.isConnectedToInternet(getContext())) {
+                    if (areResponsesValid()) {
+                        showProgress();
+                        firebaseResponsesReference.child(System.currentTimeMillis() + "").setValue(userSelectedResponses, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                userSelectedResponses.clear();
+                                userSelectedResponses = new ArrayList<>();
+                                adapter.setQuestionList(new ArrayList<Question>());
+                                adapter.setQuestionList(questions);
+                                rvQuestions.scrollToPosition(0);
+                                hideProgress();
+                                showMessage(getString(R.string.response_saved_succesfully));
+                            }
+                        });
+                    } else {
+                        // TODO: 21/10/17 Show message to user that response is not valid
+                        rvQuestions.scrollToPosition(getInvalidResponsePosition());
+                    }
                 } else {
-                    // TODO: 21/10/17 Show message to user that response is not valid
-                    rvQuestions.scrollToPosition(getInvalidResponsePosition());
+                    showMessage(getString(R.string.no_internet_connection));
                 }
             }
         });

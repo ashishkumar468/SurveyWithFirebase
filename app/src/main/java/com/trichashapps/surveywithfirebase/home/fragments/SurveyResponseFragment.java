@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.trichashapps.surveywithfirebase.R;
+import com.trichashapps.surveywithfirebase.home.activities.HomeActivity;
 import com.trichashapps.surveywithfirebase.home.adapters.SurveyResponseAdapter;
 import com.trichashapps.surveywithfirebase.home.model.SurveyResponse;
 import com.trichashapps.surveywithfirebase.home.model.domain.Question;
@@ -86,12 +87,16 @@ public class SurveyResponseFragment extends Fragment {
         rvSurveyResponses.setLayoutManager(new LinearLayoutManager(getContext()));
         rvSurveyResponses.setAdapter(adapter);
 
+        initData();
+    }
+
+    private void initData() {
+        showProgress();
         FirebaseDatabase firebaseDatabaseInstance = FirebaseHelper.getInstance().getFirebaseDatabaseInstance();
         DatabaseReference reference = firebaseDatabaseInstance.getReference(1 + "").child("userResponses");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                showProgress();
                 surveyResponses = new ArrayList<>();
                 Map<String, Object> responseMap = (Map<String, Object>) dataSnapshot.getValue();
                 if (responseMap != null && responseMap.size() > 0) {
@@ -131,9 +136,14 @@ public class SurveyResponseFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                hideProgress();
+                showMessage(getString(R.string.something_went_wrong));
             }
         });
 
+    }
+
+    private void showMessage(String message) {
+        ((HomeActivity) getContext()).showMessage(message);
     }
 }

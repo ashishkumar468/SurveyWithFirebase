@@ -1,5 +1,9 @@
 package com.trichashapps.surveywithfirebase.home.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.trichashapps.surveywithfirebase.home.model.SurveyResponse;
 import com.trichashapps.surveywithfirebase.home.model.domain.Question;
 
@@ -32,5 +36,12 @@ public class MiscUtils {
             surveyResponseStringList.add("SURVEY_ENDS");
         }
         return surveyResponseStringList;
+    }
+
+    public static boolean isConnectedToInternet(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
