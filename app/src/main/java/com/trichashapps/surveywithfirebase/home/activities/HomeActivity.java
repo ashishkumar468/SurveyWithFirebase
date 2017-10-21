@@ -1,6 +1,7 @@
 package com.trichashapps.surveywithfirebase.home.activities;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -45,6 +46,7 @@ public class HomeActivity extends BaseActivity {
     private QuestionsFragment questionsFragment;
 
     private SurveyResponseFragment surveyResponseFragment;
+    private int backPressCount = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,4 +89,19 @@ public class HomeActivity extends BaseActivity {
         Snackbar.make(toolbar, mesage, Snackbar.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onBackPressed() {
+        backPressCount++;
+        if (backPressCount == 2) {
+            super.onBackPressed();
+        }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                backPressCount = 0;
+            }
+        }, 2000);
+
+    }
 }
