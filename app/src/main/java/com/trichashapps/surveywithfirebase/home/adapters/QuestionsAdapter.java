@@ -2,6 +2,7 @@ package com.trichashapps.surveywithfirebase.home.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,7 +115,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
         public void onNextButtonClicked(Question question, int position) {
             callback.onOptionsSelected(question, position);
 
-            if (position == questionList.size()) {
+            if (position == questionList.size() - 1) {
                 callback.onSubmit();
             }
         }
@@ -131,6 +132,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
         Button btnNext;
 
         private Question question;
+        private String selectedOption = null;
 
 
         public SingleChoiceViewHolder(View itemView) {
@@ -153,7 +155,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
             lvOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    String selectedOption = question.getQuestionData().getOptions().get(i);
+                    selectedOption = question.getQuestionData().getOptions().get(i);
                     question.setSelectedAnswer(selectedOption);
                 }
             });
@@ -161,7 +163,11 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         @OnClick(R.id.btn_next)
         public void onNextButtomClicked() {
-            super.onNextButtonClicked(question, getAdapterPosition());
+            if (!TextUtils.isEmpty(selectedOption))
+                super.onNextButtonClicked(question, getAdapterPosition());
+            else {
+                // TODO: 21/10/17 show message you must select this option to proceed
+            }
         }
     }
 
@@ -194,7 +200,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
             }
 
 
-            lvOptions.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_multiple_choice, question.getQuestionData().getOptions()));
+            lvOptions.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_list_item_multiple_choice, question.getQuestionData().getOptions()));
             lvOptions.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
 
 
@@ -214,7 +220,12 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         @OnClick(R.id.btn_next)
         public void onNextButtomClicked() {
-            super.onNextButtonClicked(question, getAdapterPosition());
+            if (selectedOptions != null && selectedOptions.size() > 0)
+                super.onNextButtonClicked(question, getAdapterPosition());
+            else {
+                // TODO: 21/10/17 show message you must select this option to proceed
+            }
+
         }
     }
 
@@ -249,8 +260,12 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
 
         @OnClick(R.id.btn_next)
         public void onNextButtonClicked() {
-            question.setSelectedAnswer(etAnswer.getText().toString());
-            super.onNextButtonClicked(question, getAdapterPosition());
+            if (!TextUtils.isEmpty(etAnswer.getText().toString())) {
+                question.setSelectedAnswer(etAnswer.getText().toString());
+                super.onNextButtonClicked(question, getAdapterPosition());
+            } else {
+                // TODO: 21/10/17 show message you must select this option to proceed
+            }
         }
     }
 

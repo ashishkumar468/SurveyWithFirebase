@@ -130,8 +130,10 @@ public class QuestionsFragment extends Fragment {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             userSelectedResponses.clear();
+                            userSelectedResponses = new ArrayList<>();
                             adapter.setQuestionList(new ArrayList<Question>());
                             adapter.setQuestionList(questions);
+                            rvQuestions.scrollToPosition(0);
                         }
                     });
                 } else {

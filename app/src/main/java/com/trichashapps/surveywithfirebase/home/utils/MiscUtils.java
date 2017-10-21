@@ -21,8 +21,9 @@ public class MiscUtils {
                 if (question.getSelectedOptions() != null) {
                     String selectedOptions = "";
                     for (String selectedOption : question.getSelectedOptions()) {
-                        selectedOptions = selectedOptions + selectedOption + " ";
+                        selectedOptions = selectedOptions + selectedOption + ", ";
                     }
+                    selectedOptions = selectedOptions.substring(0, selectedOptions.length() - 2);
                     surveyResponseStringList.add(selectedOptions.trim());
                 } else if (question.getSelectedAnswer() != null) {
                     surveyResponseStringList.add(question.getSelectedAnswer());

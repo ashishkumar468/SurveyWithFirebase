@@ -75,34 +75,37 @@ public class SurveyResponseFragment extends Fragment {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                surveyResponses = new ArrayList<>();
                 Map<String, Object> responseMap = (Map<String, Object>) dataSnapshot.getValue();
-                for (String key : responseMap.keySet()) {
-                    SurveyResponse surveyResponse = new SurveyResponse();
-                    surveyResponse.setSurveyTimestamp(key);
-                    List<Map<String, Object>> responseMapList = (List<Map<String, Object>>) responseMap.get(key);
-                    List<Question> surveyQuestions = new ArrayList<>();
-                    for (Map<String, Object> stringObjectMap : responseMapList) {
-                        Question surveyQuesionWithResponse = new Question();
-                        surveyQuesionWithResponse.setType((String) stringObjectMap.get("type"));
-                        if (stringObjectMap.containsKey("selectedAnswer")) {
-                            surveyQuesionWithResponse.setSelectedAnswer((String) stringObjectMap.get("selectedAnswer"));
+                if (responseMap != null && responseMap.size() > 0) {
+                    for (String key : responseMap.keySet()) {
+                        SurveyResponse surveyResponse = new SurveyResponse();
+                        surveyResponse.setSurveyTimestamp(key);
+                        List<Map<String, Object>> responseMapList = (List<Map<String, Object>>) responseMap.get(key);
+                        List<Question> surveyQuestions = new ArrayList<>();
+                        for (Map<String, Object> stringObjectMap : responseMapList) {
+                            Question surveyQuesionWithResponse = new Question();
+                            surveyQuesionWithResponse.setType((String) stringObjectMap.get("type"));
+                            if (stringObjectMap.containsKey("selectedAnswer")) {
+                                surveyQuesionWithResponse.setSelectedAnswer((String) stringObjectMap.get("selectedAnswer"));
+                            }
+                            if (stringObjectMap.containsKey("selectedOptions")) {
+                                surveyQuesionWithResponse.setSelectedOptions((List<String>) stringObjectMap.get("selectedOptions"));
+                            }
+                            surveyQuesionWithResponse.setId(Integer.parseInt(String.valueOf(stringObjectMap.get("id"))));
+                            QuestionData questionData = new QuestionData();
+                            HashMap<String, Object> questionDataMap = (HashMap<String, Object>) stringObjectMap.get("questionData");
+                            questionData.setTitle((String) questionDataMap.get("title"));
+                            if (questionDataMap.containsKey("options")) {
+                                List<String> options = (List<String>) questionDataMap.get("options");
+                                questionData.setOptions(options);
+                            }
+                            surveyQuesionWithResponse.setQuestionData(questionData);
+                            surveyQuestions.add(surveyQuesionWithResponse);
                         }
-                        if (stringObjectMap.containsKey("selectedOptions")) {
-                            surveyQuesionWithResponse.setSelectedOptions((List<String>) stringObjectMap.get("selectedOptions"));
-                        }
-                        surveyQuesionWithResponse.setId(Integer.parseInt(String.valueOf(stringObjectMap.get("id"))));
-                        QuestionData questionData = new QuestionData();
-                        HashMap<String, Object> questionDataMap = (HashMap<String, Object>) stringObjectMap.get("questionData");
-                        questionData.setTitle((String) questionDataMap.get("title"));
-                        if (questionDataMap.containsKey("options")) {
-                            List<String> options = (List<String>) questionDataMap.get("options");
-                            questionData.setOptions(options);
-                        }
-                        surveyQuesionWithResponse.setQuestionData(questionData);
-                        surveyQuestions.add(surveyQuesionWithResponse);
+                        surveyResponse.setQuestions(surveyQuestions);
+                        surveyResponses.add(surveyResponse);
                     }
-                    surveyResponse.setQuestions(surveyQuestions);
-                    surveyResponses.add(surveyResponse);
                 }
                 List<String> surveyResponseStringList = MiscUtils.getSurveyResponseStringList(surveyResponses);
                 adapter.setSurveyResponses(surveyResponseStringList);
