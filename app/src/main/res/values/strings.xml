@@ -8,4 +8,5 @@
     <string name="response_saved_succesfully">Response saved succcesfully</string>
     <string name="please_make_sure_you_answer_all_the_questions">Please make sure you answer all the questions</string>
     <string name="invalid_input">Invalid input</string>
+    <string name="please_back_press_twice_to_exit">Please back press twice to exit</string>
 </resources>

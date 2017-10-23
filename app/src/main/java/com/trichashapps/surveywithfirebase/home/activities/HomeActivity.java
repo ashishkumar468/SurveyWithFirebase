@@ -95,13 +95,12 @@ public class HomeActivity extends BaseActivity {
         if (backPressCount == 2) {
             super.onBackPressed();
         }
-
+        showMessage(getString(R.string.please_back_press_twice_to_exit));
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 backPressCount = 0;
             }
         }, 2000);
-
     }
 }

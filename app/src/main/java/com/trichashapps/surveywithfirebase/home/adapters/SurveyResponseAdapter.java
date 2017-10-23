@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trichashapps.surveywithfirebase.R;
+import com.trichashapps.surveywithfirebase.home.utils.MiscUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +71,7 @@ public class SurveyResponseAdapter extends RecyclerView.Adapter<SurveyResponseAd
             } else {
                 viewSurveySeperator.setVisibility(View.GONE);
                 tvSurveyResponse.setVisibility(View.VISIBLE);
-                tvSurveyResponse.setText(surveyResponses.get(position));
+                tvSurveyResponse.setText(MiscUtils.getHumanReadableDate(surveyResponses.get(position)));
             }
         }
     }
